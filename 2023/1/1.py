@@ -48,16 +48,6 @@ import os
 import re
 
 
-def read_file(file_path):
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-    except FileNotFoundError:
-        return f"Error: The file at {file_path} was not found."
-    except IOError:
-        return f"Error: An error occurred while reading the file at {file_path}."
-
-
 def group_pairs(str_num_arr):
     pairs = []
     for nums in str_num_arr:
@@ -172,7 +162,7 @@ def get_word_sum_pairs(lines):
     
 
 def main(file_path):
-    data = read_file(file_path)
+    data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.split('\n')
     sums = get_sum_of_pairs(lines)
     total_sum = sum(sums)
