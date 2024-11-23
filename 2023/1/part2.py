@@ -2,28 +2,6 @@
 
 '''
 --- Day 1: Trebuchet?! ---
-Something is wrong with global snow production, and you've been selected to take a look. The Elves have even given you a map; on it, they've used stars to mark the top fifty locations that are likely to be having problems.
-
-You've been doing this long enough to know that to restore snow operations, you need to check all fifty stars by December 25th.
-
-Collect stars by solving puzzles. Two puzzles will be made available on each day in the Advent calendar; the second puzzle is unlocked when you complete the first. Each puzzle grants one star. Good luck!
-
-You try to ask why they can't just use a weather machine ("not powerful enough") and where they're even sending you ("the sky") and why your map looks mostly blank ("you sure ask a lot of questions") and hang on did you just say the sky ("of course, where do you think snow comes from") when you realize that the Elves are already loading you into a trebuchet ("please hold still, we need to strap you in").
-
-As they're making the final adjustments, they discover that their calibration document (your puzzle input) has been amended by a very young Elf who was apparently just excited to show off her art skills. Consequently, the Elves are having trouble reading the values on the document.
-
-The newly-improved calibration document consists of lines of text; each line originally contained a specific calibration value that the Elves now need to recover. On each line, the calibration value can be found by combining the first digit and the last digit (in that order) to form a single two-digit number.
-
-For example:
-
-1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet
-In this example, the calibration values of these four lines are 12, 38, 15, and 77. Adding these together produces 142.
-
-Consider your entire calibration document. What is the sum of all of the calibration values?
-
 --- Part Two ---
 Your calculation isn't quite right. It looks like some of the digits are actually spelled out with letters: one, two, three, four, five, six, seven, eight, and nine also count as valid "digits".
 
@@ -43,9 +21,10 @@ What is the sum of all of the calibration values?
 
 # python 1.py /path/to/your/input2.txt
 
-import argparse
 import os
 import re
+
+from common.common import arg_parse
 
 
 def group_pairs(str_num_arr):
@@ -159,38 +138,27 @@ def get_word_sum_pairs(lines):
 
 
     return get_sum_of_pairs(converted_lines3)
-    
 
+
+ 
+    
 def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.split('\n')
-    sums = get_sum_of_pairs(lines)
+
+    sums = get_word_sum_pairs(lines)
     total_sum = sum(sums)
     
-
-    sums2 = get_word_sum_pairs(lines)
-    total_sum2 = sum(sums2)
-    
-    print(sums)
     print(total_sum)
-    print(sums2)
-    print(total_sum2)
-    
-    if 'input1.txt' in file_path: assert total_sum == 142 
+ 
+    if 'input3.txt' in file_path: assert total_sum == 54100 
     if 'input2.txt' in file_path: assert total_sum == 54877 
-    if 'input3.txt' in file_path: assert total_sum2 == 54100 
-    
-    return (total_sum, total_sum2)
+        
+    return total_sum
     
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    default_file_path = os.path.join(current_dir, 'input2.txt')
-    
-    parser = argparse.ArgumentParser(description="🖖")
-    parser.add_argument("file_path", type=str, nargs='?', 
-        default=default_file_path, help="The path to the file containing the input data.")
-    args = parser.parse_args()
-    
+    args = arg_parse(__file__, 'input1.txt', main)
     main(args.file_path)
-		
+    args = arg_parse(__file__, 'input2.txt', main)
+    main(args.file_path)

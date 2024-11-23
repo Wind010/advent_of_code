@@ -21,12 +21,11 @@ The power of a set of cubes is equal to the numbers of red, green, and blue cube
 For each game, find the minimum set of cubes that must have been present. What is the sum of the power of these sets?
 '''
 
-import argparse
 from functools import reduce
-import os
 
 import re
 from operator import mul
+from common.common import arg_parse
 from part1 import RED, GREEN, BLUE
 
 
@@ -51,6 +50,7 @@ def get_fewest_cubes_of_each_color(line):
 
     return cubes
   
+  
 def get_fewest_cubes_of_each_color_regex(line):
     cubes = {
         RED: 0,
@@ -71,7 +71,7 @@ def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.split('\n')
     
-    cubes = [get_fewest_cubes_of_each_color_regex(line) for line in lines]
+    cubes = [get_fewest_cubes_of_each_color(line) for line in lines]
     powers = [reduce(mul, cube.values()) for cube in cubes]
     total_powers = sum(powers)
         
@@ -84,13 +84,7 @@ def main(file_path):
     
 
 if __name__ == "__main__":
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    default_file_path = os.path.join(current_dir, 'input2.txt')
-    
-    parser = argparse.ArgumentParser(description="🖖")
-    parser.add_argument("file_path", type=str, nargs='?', 
-        default=default_file_path, help="The path to the file containing the input data.")
-    args = parser.parse_args()
-    
+    args = arg_parse(__file__, 'input1.txt', main)
     main(args.file_path)
-		
+    args = arg_parse(__file__, 'input2.txt', main)
+    main(args.file_path)
