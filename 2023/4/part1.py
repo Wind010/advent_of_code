@@ -36,7 +36,6 @@ Take a seat in the large pile of colorful cards. How many points are they worth 
 
 
 import re
-
 from common.common import arg_parse
 
 def get_scores(lines):
@@ -110,7 +109,7 @@ def main(file_path):
             
 
 if __name__ == "__main__":
-    # args = arg_parse(__file__, 'input1.txt', main)
-    # main(args.file_path)
+    args = arg_parse(__file__, 'input1.txt', main)
+    main(args.file_path)
     args = arg_parse(__file__, 'input2.txt', main)
     main(args.file_path)
