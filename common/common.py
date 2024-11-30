@@ -20,10 +20,10 @@ def arg_parse(file: str, input_file: str, main: Callable):
 def timer(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        start_time = time.time()  # Record the start time
+        start_time = time.time() 
         result = func(*args, **kwargs)  # Call the actual function
-        end_time = time.time()  # Record the end time
-        elapsed_time = end_time - start_time  # Calculate elapsed time
+        end_time = time.time()
+        elapsed_time = end_time - start_time 
         print(f"Function '{func.__name__}' executed in {elapsed_time:.6f} seconds ⌛")
-        return result  # Return the function's result
+        return result 
     return wrapper
