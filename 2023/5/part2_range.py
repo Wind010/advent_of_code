@@ -84,7 +84,7 @@ def find_min_clean(input):
 @timer
 def find_min_with_ranges(input):
     segments = input.split('\n\n')
-    ranges = [Range(int(pair[0]), int(pair[0]) + int(pair[1]), 1) for pair in re.findall('(\d+) (\d+)', segments[0])]
+    ranges = [Range(int(pair[0]), int(pair[0]) + int(pair[1]), 1) for pair in re.findall(r'(\d+) (\d+)', segments[0])]
     min_location = math.inf
     while ranges:
         #print(ranges[-1])
