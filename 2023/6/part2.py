@@ -61,9 +61,9 @@ def simulate_race_roots(time, distance):
     t = T - B
     Where:
         t is travel time
-        T is race time,
+        T is total race time,
         B button pressed time
-        
+
     D = t * B
     Where
         D is the traveled distance
