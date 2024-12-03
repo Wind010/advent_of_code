@@ -66,7 +66,7 @@ def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.strip().split('\n')
 
-    safe_reactors = check_reactors_cleaner(lines)
+    safe_reactors = check_reactors(lines)
     safe_count = safe_reactors.count(True)
     #print(safe_reactors)
     print(safe_count)

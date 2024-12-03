@@ -50,7 +50,6 @@ from collections import Counter, defaultdict
 
 def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
-
     lines = data.strip().split('\n')
     
     col1 = sorted(int(line.split()[0]) for line in lines)
