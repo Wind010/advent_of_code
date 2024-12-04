@@ -10,7 +10,6 @@ from common.common import arg_parse, timer
 
 def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
-
     lines = data.strip().split('\n')
 
     
