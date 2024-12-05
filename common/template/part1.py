@@ -5,7 +5,7 @@
 
 
 import re
-from common.common import arg_parse, timer
+from common.common import arg_parse, assertions, timer
 
 
 def main(file_path):

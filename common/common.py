@@ -14,7 +14,23 @@ def arg_parse(file: str, input_file: str, main: Callable):
     parser = argparse.ArgumentParser(description="🖖")
     parser.add_argument("file_path", type=str, nargs='?',
         default=default_file_path, help="The path to the file containing the input data.")
-    return parser.parse_args()
+    
+    if not os.path.exists(default_file_path):
+        print(f"{default_file_path} does not exist")
+        return
+
+    data = open(default_file_path, 'r', encoding='utf-8').read()
+    if not data:
+        return
+    main(parser.parse_args(), data)
+    
+    return parser.parse_args(), data
+
+
+def assertions(args, value, expected_value1, expected_value2):
+    print(value)
+    if 'input1.txt' in args.file_path: assert value == expected_value1
+    if 'input2.txt' in args.file_path: assert value == expected_value2
 
 
 def timer(func):
@@ -25,5 +41,5 @@ def timer(func):
         end_time = time.time()
         elapsed_time = end_time - start_time 
         print(f"Function '{func.__name__}' executed in {elapsed_time:.6f} seconds ⌛")
-        return result 
+        return result
     return wrapper

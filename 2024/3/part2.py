@@ -1,27 +1,11 @@
 '''
---- Part Two ---
-As you scan through the corrupted memory, you notice that some of the conditional statements are also still intact. If you handle some of the uncorrupted conditional statements in the program, you might be able to get an even more accurate result.
-
-There are two new instructions you'll need to handle:
-
-The do() instruction enables future mul instructions.
-The don't() instruction disables future mul instructions.
-Only the most recent do() or don't() instruction applies. At the beginning of the program, mul instructions are enabled.
-
-For example:
-
-xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))
-This corrupted memory is similar to the example from before, but this time the mul(5,5) and mul(11,8) instructions are disabled because there is a don't() instruction before them. The other mul instructions function normally, including the one at the end that gets re-enabled by a do() instruction.
-
-This time, the sum of the results is 48 (2*4 + 8*5).
-
-Handle the new instructions; what do you get if you add up all of the results of just the enabled multiplications?
+https://adventofcode.com/2024/day/3
 '''
 
 
 
 import re
-from common.common import arg_parse, timer
+from common.common import arg_parse, timer, assertions
 
 DONT = '🚫'
 DO = '🚀'
@@ -128,8 +112,7 @@ def correct_memory_multiply_regex_iterator(line):
 
 
 
-def main(file_path):
-    data = open(file_path, 'r', encoding='utf-8').read()
+def main(args, data):
     line = data.strip().replace('\n', '').replace("don't()", DONT).replace("do()", DO)
     
     res = correct_memory_multiply_regex_match(line)
@@ -150,17 +133,14 @@ def main(file_path):
     print(total2)
     
     line = data.strip().replace('\n', '')
-    res1 = ro(line)
+    res1 = correct_memory_multiply_regex_sub_ropatel(line)
 
     assert total1 == total2 == total3 == total4 == res1
-    if 'input3.txt' in file_path: assert total1 == 48
-    if 'input2.txt' in file_path: assert total1 == 94455185
- 
+
+    assertions(args, total1, 48, 94455185)
 
 
 if __name__ == "__main__":
     args = arg_parse(__file__, 'input3.txt', main)
-    main(args.file_path)
     args = arg_parse(__file__, 'input2.txt', main)
-    main(args.file_path)
 

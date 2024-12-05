@@ -1,33 +1,9 @@
 '''
---- Part Two ---
-The Elf looks quizzically at you. Did you misunderstand the assignment?
-
-Looking for the instructions, you flip over the word search to find that this isn't actually an XMAS puzzle; it's an X-MAS puzzle in which you're supposed to find two MAS in the shape of an X. One way to achieve that is like this:
-
-M.S
-.A.
-M.S
-Irrelevant characters have again been replaced with . in the above diagram. Within the X, each MAS can be written forwards or backwards.
-
-Here's the same example from before, but this time all of the X-MASes have been kept instead:
-
-.M.S......
-..A..MSMS.
-.M.S.MAA..
-..A.ASMSM.
-.M.S.M....
-..........
-S.S.S.S.S.
-.A.A.A.A..
-M.M.M.M.M.
-..........
-In this example, an X-MAS appears 9 times.
-
-Flip the word search from the instructions back over to the word search side and try again. How many times does an X-MAS appear?
+https://adventofcode.com/2024/day/4
 '''
 
 
-from common.common import arg_parse, timer
+from common.common import arg_parse, timer, assertions
 
 
 def find_middle_letter(word):
@@ -81,8 +57,7 @@ def find_diagonals2(lines, word='MAS'):
     return count
 
 
-def main(file_path):
-    data = open(file_path, 'r', encoding='utf-8').read()
+def main(args, data):
     lines = data.strip().split('\n')
     
     total1 = find_diagonals(lines)
@@ -90,10 +65,7 @@ def main(file_path):
     
     assert total1 == total2
     
-    print(total1)
-    
-    if 'input3.txt' in file_path: assert total1 == 9
-    if 'input2.txt' in file_path: assert total1 == 1831
+    assertions(args, total1, 9, 1831)
 
     return total1
     
@@ -101,7 +73,5 @@ def main(file_path):
 
 if __name__ == "__main__":
     args = arg_parse(__file__, 'input3.txt', main)
-    main(args.file_path)
     args = arg_parse(__file__, 'input2.txt', main)
-    main(args.file_path)
 

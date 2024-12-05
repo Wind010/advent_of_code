@@ -5,7 +5,7 @@
 
 
 import re
-from common.common import arg_parse, timer
+from common.common import arg_parse, assertions, timer
 
 
 def main(file_path):
@@ -17,14 +17,11 @@ def main(file_path):
     #if 'input1.txt' in file_path: assert total == 11
     #if 'input2.txt' in file_path: assert total == 2769675
 
-
     return total
     
 
 
 if __name__ == "__main__":
     args = arg_parse(__file__, 'input1.txt', main)
-    main(args.file_path)
     args = arg_parse(__file__, 'input2.txt', main)
-    main(args.file_path)
 

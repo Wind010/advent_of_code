@@ -1,28 +1,13 @@
 '''
---- Part Two ---
-The engineers are surprised by the low number of safe reports until they realize they forgot to tell you about the Problem Dampener.
-
-The Problem Dampener is a reactor-mounted module that lets the reactor safety systems tolerate a single bad level in what would otherwise be a safe report. It's like the bad level never happened!
-
-Now, the same rules apply as before, except if removing a single level from an unsafe report would make it safe, the report instead counts as safe.
-
-More of the above example's reports are now safe:
-
-7 6 4 2 1: Safe without removing any level.
-1 2 7 8 9: Unsafe regardless of which level is removed.
-9 7 6 2 1: Unsafe regardless of which level is removed.
-1 3 2 4 5: Safe by removing the second level, 3.
-8 6 4 4 1: Safe by removing the third level, 4.
-1 3 6 7 9: Safe without removing any level.
-Thanks to the Problem Dampener, 4 reports are actually safe!
-
-Update your analysis by handling situations where the Problem Dampener can remove a single level from unsafe reports. How many reports are now safe?
+https://adventofcode.com/2024/day/2
 '''
 
 
-from common.common import arg_parse, timer
+from common.common import arg_parse, timer, assertions
 from part1 import is_safe_reactor
 
+
+@timer
 def check_reactors(levels):
     res = []
     for level in levels:
@@ -45,6 +30,7 @@ def check_reactors(levels):
     
     return res
 
+@timer
 def check_reactors_cleaner(levels, limit=3):
     return [
         is_safe_reactor(numbers, limit) or
@@ -53,6 +39,8 @@ def check_reactors_cleaner(levels, limit=3):
         for numbers in [list(map(int, level.split()))]
     ]
 
+
+@timer
 def check_reactors_cleaner_with_safe_reactors_only(levels, limit=3):
     return [
         any(is_safe_reactor(numbers[:i] + numbers[i + 1:], limit) for i in range(len(numbers) + 1))
@@ -61,8 +49,7 @@ def check_reactors_cleaner_with_safe_reactors_only(levels, limit=3):
     ]
     
     
-def main(file_path):
-    data = open(file_path, 'r', encoding='utf-8').read()
+def main(args, data):
     lines = data.strip().split('\n')
 
     safe_reactors = check_reactors(lines)
@@ -70,8 +57,7 @@ def main(file_path):
     #print(safe_reactors)
     print(safe_count)
     
-    if 'input1.txt' in file_path: assert safe_count == 4
-    if 'input2.txt' in file_path: assert safe_count == 386
+    assertions(args, safe_count, 4, 386)
 
     return safe_reactors
     
@@ -79,7 +65,5 @@ def main(file_path):
 
 if __name__ == "__main__":
     args = arg_parse(__file__, 'input1.txt', main)
-    main(args.file_path)
     args = arg_parse(__file__, 'input2.txt', main)
-    main(args.file_path)
 
