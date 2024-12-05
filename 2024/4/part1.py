@@ -85,12 +85,88 @@ def find_word_count(lines, word='XMAS'):
     return count
 
 
+def find_word_count_ropatel(matrix):
+    wordCount, limit = 0, len(matrix)
+
+    # Horizontal Right to Left
+    for y in range(limit):
+        for x in range(limit):
+            
+            # backward case
+            if (matrix[y][x]=="S" and (x+3) < limit):
+                test = matrix[y][x] + matrix[y][x+1] + matrix[y][x+2] + matrix[y][x+3]
+                if (test=="SAMX"):
+                    wordCount+=1
+
+            # forward case
+            if (matrix[y][x]=="X" and (x+3)< limit):
+                test = matrix[y][x] + matrix[y][x+1] + matrix[y][x+2] + matrix[y][x+3]
+                if (test=="XMAS"):
+                    wordCount+=1
+
+
+    # Vertical Up Down
+    for x in range(limit):
+        for y in range(limit):
+
+            # backward case
+            if (matrix[y][x]=="S" and (y+3) < limit):
+                test = matrix[y][x] + matrix[y+1][x] + matrix[y+2][x] + matrix[y+3][x]
+                if (test=="SAMX"):
+                    wordCount+=1
+
+            # forward case
+            if (matrix[y][x]=="X" and (y+3)< limit):
+                test = matrix[y][x] + matrix[y+1][x] + matrix[y+2][x] + matrix[y+3][x]
+                if (test=="XMAS"):
+                    wordCount+=1
+
+
+    # Right Diagonal            
+    for y in range(limit):
+        for x in range(limit):
+            
+            # backward case
+            if (matrix[y][x]=="S" and ((y+3)< limit and (x+3) < limit)):
+                test = matrix[y][x] + matrix[y+1][x+1] + matrix[y+2][x+2] + matrix[y+3][x+3]
+                if (test=="SAMX"):
+                    wordCount+=1
+
+            # forward case
+            if (matrix[y][x]=="X" and ((y+3)<limit and (x+3) < limit)):
+                test = matrix[y][x] + matrix[y+1][x+1] + matrix[y+2][x+2] + matrix[y+3][x+3]
+                if (test=="XMAS"):
+                    wordCount+=1
+
+    # Left Diagonal            
+    for y in range(limit):
+        for x in range(limit-1,0,-1):
+            
+            # backward case
+            if (matrix[y][x]=="S" and ((y+3)<limit) and (x-3) >= 0):
+                test = matrix[y][x] + matrix[y+1][x-1] + matrix[y+2][x-2] + matrix[y+3][x-3]
+                if (test=="SAMX"):
+                    wordCount+=1
+
+            # forward case
+            if (matrix[y][x]=="X" and ((y+3)<limit) and (x-3) >= 0):
+                test = matrix[y][x] + matrix[y+1][x-1] + matrix[y+2][x-2] + matrix[y+3][x-3]
+                if (test=="XMAS"):
+                    wordCount+=1
+
+    return wordCount
+
+
 def main(file_path):
     data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.strip().split('\n')
 
     total = find_word_count(lines)
     print(total)
+    
+    total2 = find_word_count_ro(lines)
+    
+    assert total == total2
     
     if 'input1.txt' in file_path: assert total == 18
     if 'input2.txt' in file_path: assert total == 2336

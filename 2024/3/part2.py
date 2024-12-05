@@ -63,6 +63,40 @@ def correct_memory_multiply_regex_match2(line):
 
     return res
 
+
+def correct_memory_multiply_regex_sub_ropatel(line):
+    sum, lineSum = 0, 0
+    
+    # Look for any matches in the STOP START block of the code, and remove
+    pattern = r"(don't\(\).*?do\(\))"
+    line = re.sub(pattern,'',line)
+
+    # Look for any matches that follow a STOP without a START, and remove
+    pattern = r"(don't\(\).*)"
+    line = re.sub(pattern,'',line)
+
+    # Let's see what the line looks like now.
+    print(line)
+
+    # Finally, let's find all the proper COMPUTE matches
+    pattern = r"mul\((\d{1,3}),(\d{1,3})\)"
+    matches = re.findall(pattern, line)
+
+    # Iterate, compute and aggregate
+    for x, y in matches:
+        lineSum += int(x) * int(y)
+        sum += int(x) * int(y)
+
+    # Let's see what each line sum looks like 
+    print("Line Sum = ", lineSum)
+    print("\n")
+    lineSum = 0
+    
+    # Print the final sum along with line count
+    print("sum = ", sum)
+    return sum
+    
+
 @timer
 def correct_memory_multiply_regex_match3(line):
     pattern = rf"(mul\((\d+),(\d+)\)|{DONT}|{DO})"
@@ -114,9 +148,11 @@ def main(file_path):
     multi_pair = [(int(a) * int(b)) for a, b in res]
     total4 = sum(multi_pair)
     print(total2)
- 
+    
+    line = data.strip().replace('\n', '')
+    res1 = ro(line)
 
-    assert total1 == total2 == total3 == total4
+    assert total1 == total2 == total3 == total4 == res1
     if 'input3.txt' in file_path: assert total1 == 48
     if 'input2.txt' in file_path: assert total1 == 94455185
  
