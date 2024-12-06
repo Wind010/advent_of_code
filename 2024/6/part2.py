@@ -8,12 +8,14 @@ import re
 from common.common import arg_parse, assertions, timer
 
 
-def main(args, data):
+def main(file_path):
+    data = open(file_path, 'r', encoding='utf-8').read()
     lines = data.strip().split('\n')
+
+    
 
     #if 'input1.txt' in file_path: assert total == 11
     #if 'input2.txt' in file_path: assert total == 2769675
-
 
     return total
     
