@@ -6,6 +6,9 @@ https://adventofcode.com/2024/day/6
 from common.common import arg_parse, assertions, timer
 import sys
 import multiprocessing
+from visualize import visualize_paths
+
+
 GUARD = '^'
 OBSTACLE = '#'
 
@@ -111,12 +114,14 @@ def monitor_guard_path_multiprocesses(grid):
         all_paths = pool.starmap(start, [(grid, guard_pos, obstacle) for obstacle in obstacles])
         #print(all_paths)
     
+    #visualize_paths(grid, all_paths)
+    
     return len(max(all_paths))
 
 
-def start_wrapper(args):
-    grid, start_row, start_col, block_row, block_col = args
-    return start(grid, start_row, start_col, block_row, block_col)
+# def start_wrapper(args):
+#     grid, start_row, start_col, block_row, block_col = args
+#     return start(grid, start_row, start_col, block_row, block_col)
 
 
 
