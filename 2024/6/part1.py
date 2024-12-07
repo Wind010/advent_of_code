@@ -5,7 +5,7 @@ https://adventofcode.com/2024/day/6
 
 from common.common import arg_parse, assertions, timer
 import sys
-import multiprocessing
+from multiprocessing import Pool, cpu_count
 from visualize import visualize_paths
 from constants import OBSTACLE, GUARD
 
@@ -111,7 +111,7 @@ def monitor_guard_path_multiprocesses(grid):
     #with ProcessPoolExecutor() as executor:
     
     # Tweaked
-    with multiprocessing.Pool(processes=multiprocessing.cpu_count() // 2) as pool:
+    with Pool(processes=cpu_count() // 2) as pool:
         # Maps each obstacle to the worker process
         all_paths = pool.starmap(start, [(grid, guard_pos, obstacle) for obstacle in obstacles])
         #print(all_paths)

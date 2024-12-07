@@ -6,6 +6,7 @@ https://adventofcode.com/2024/day/6
 from common.common import arg_parse, assertions, timer
 from part1 import find_guard_and_obstacles
 import multiprocessing
+from multiprocessing import Pool, cpu_count
 
 
 @timer
@@ -85,7 +86,7 @@ def find_optimal_obstruction_positions_multiprocess(grid, guard_pos):
     rows, cols = len(grid), len(grid[0])
     directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
-    with multiprocessing.Pool(processes=multiprocessing.cpu_count() // 2) as pool:
+    with Pool(processes=cpu_count() // 2) as pool:
         tasks = [(r, c, grid, guard_pos, directions) for r in range(rows) for c in range(cols)]
         result = pool.starmap(process_position, tasks)
 
