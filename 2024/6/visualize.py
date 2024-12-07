@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-OBSTACLE = '#'
+from constants import OBSTACLE
 
 def visualize_paths(grid, all_paths) -> None:
     rows, cols = len(grid), len(grid[0])

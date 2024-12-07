@@ -7,14 +7,17 @@ from common.common import arg_parse, assertions, timer
 import sys
 import multiprocessing
 from visualize import visualize_paths
+from constants import OBSTACLE, GUARD
 
-
-GUARD = '^'
-OBSTACLE = '#'
 
 
 # def find_guard_initial_position(grid):
-#     for r, _ in enumerate(grid):
+#     for x, row in enumerate(grid):    
+#         if GUARD in row:
+#             return (x, row.index(GUARD))
+
+# def find_guard_initial_position(grid):
+#     for r, _ in enumerate(grid):    
 #         for c, _ in enumerate(grid[0]):
 #             #print(r, c, grid[r][c])
 
@@ -57,13 +60,13 @@ def start(grid, guard_pos, obs_pos):
     r, c = guard_pos
     o_row, o_col = obs_pos
     visited_cells = set()
-    direction = 0  # Initial direction is up.
+    cur_dir = 0  # Initial direction is up.
     
     while True:
         visited_cells.add((r, c))
 
         # Calculate next position
-        dr, dc = directions[direction]
+        dr, dc = directions[cur_dir]
         next_row, next_col = r + dr, c + dc
 
         # Check if out of bounds or hitting the blocking point
@@ -73,13 +76,12 @@ def start(grid, guard_pos, obs_pos):
             break
         if grid[next_row][next_col] == OBSTACLE or (next_row, next_col) == (o_row, o_col):
             # Turn right
-            direction = (direction + 1) % len(directions) # Take the modulus of 4.
+            cur_dir = (cur_dir + 1) % len(directions) # Take the modulus of 4.
         else:
             # Move to the next cell
             r, c = next_row, next_col
 
     return len(visited_cells)
-
 
 
 @timer
@@ -127,8 +129,9 @@ def monitor_guard_path_multiprocesses(grid):
 
 def main(args, data):
     grid = data.strip().split('\n')
-
-    total_steps = monitor_guard_path_multiprocesses(grid)
+    
+    total_steps = monitor_guard_path(grid)
+    #total_steps = monitor_guard_path_multiprocesses(grid)
     
     assertions(args, total_steps, 41, 4789)
     

@@ -8,8 +8,7 @@ import re
 from common.common import arg_parse, assertions, timer
 
 
-def main(file_path):
-    data = open(file_path, 'r', encoding='utf-8').read()
+def main(grid, data):
     lines = data.strip().split('\n')
 
     
