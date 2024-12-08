@@ -5,13 +5,18 @@ Description was terrible.  Go with the diagrams.
 Collinear:  Having both points through a straight line with the same distance in this case for the antinodes.
 '''
 
-
-
 import re
-from common.common import arg_parse, assertions, timer
+
 from collections import defaultdict
 from itertools import combinations
 from visualization import print_grid
+
+# From CMDLINE
+#import os, sys
+#sys.path.insert(0, os.path.abspath('common'))
+#from common import arg_parse, assertions, timer
+
+from common.common import arg_parse, assertions, timer
 
 def find_antennas(grid):
     ''' Time complexity:  O(n*m)'''

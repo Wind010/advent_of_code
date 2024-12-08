@@ -6,7 +6,8 @@ from functools import wraps
 
 from typing import Callable
 
- 
+# If class, then __init__.py would resolve.
+
 def arg_parse(file: str, input_file: str, main: Callable):
     current_dir = os.path.dirname(os.path.abspath(file))
     default_file_path = os.path.join(current_dir, input_file)
