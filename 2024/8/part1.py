@@ -11,7 +11,7 @@ import re
 from common.common import arg_parse, assertions, timer
 from collections import defaultdict
 from itertools import combinations
-
+from visualization import print_grid
 
 def find_antennas(grid):
     ''' Time complexity:  O(n*m)'''
@@ -99,27 +99,6 @@ def determine_antinodes_combinations(grid, antennas):
 
     return antinodes
 
-
-# TODO:  Add matching colors for antenna and corresponding anti-nodes.
-def print_grid(grid, antennas, antinodes):
-    for y in range(len(grid)):
-        for x in range(len(grid[0])):
-            is_antenna, is_antinode = False, False
-            for frequency, coords in antennas.items():
-                if (x, y) in coords:
-                    print(frequency, end='')
-                    is_antenna = True
-                    break
-            if (y, x) in antinodes:
-                is_antinode = True
-            if not is_antenna and not is_antinode:
-                print('.', end='')
-            elif is_antinode:
-                print('#', end='')
-        print()
-
-
-
 def main(args, data):
     grid = data.strip().split('\n')
     
@@ -131,7 +110,7 @@ def main(args, data):
     
     assert antinodes1 == antinodes2 == antinodes3
     
-    #print_grid(grid, antennas, antinodes1)
+    print_grid(grid, antennas, antinodes1)
     total = len(antinodes1)
     
     assertions(args, total, 14, 332)

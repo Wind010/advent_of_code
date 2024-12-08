@@ -6,9 +6,9 @@ https://adventofcode.com/2024/day/8
 import re
 from common.common import arg_parse, assertions, timer
 from collections import defaultdict
-from part1 import find_antennas, print_grid
+from part1 import find_antennas
 from itertools import combinations
-
+from visualization import print_grid
 
 
 def determine_antinodes_original(grid, antennas):
