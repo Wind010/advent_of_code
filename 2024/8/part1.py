@@ -1,5 +1,8 @@
 '''
 https://adventofcode.com/2024/day/8
+
+Description was terrible.  Go with the diagrams.  
+Collinear:  Having both points through a straight line with the same distance in this case for the antinodes.
 '''
 
 
@@ -7,74 +10,36 @@ https://adventofcode.com/2024/day/8
 import re
 from common.common import arg_parse, assertions, timer
 from collections import defaultdict
+from itertools import combinations
 
 
 def find_antennas(grid):
-    antennas = defaultdict(list)
+    ''' Time complexity:  O(n*m)'''
+    antennas = defaultdict(list) # Every antenna frequency and list of corresponding coordinates.
     for r, row in enumerate(grid):
         for c, cell in enumerate(row):
             if cell != '.':
                 antennas[cell].append((r, c))
+    #print(antennas)
     return antennas
 
 # def find_antennas(grid):
 #     return {cell: [(r, c) for c, cell in enumerate(row) if cell != '.']
 #             for x, row in enumerate(grid) if any(cell != '.' for cell in row)}
 
-def check_if_matching_antenna(grid, antenna):
-    rows, cols = len(grid), len(grid[0])
-    
-    row, col = antenna
-    m1_row = row + 2
-    m1_col = col + 1
-    
-    m2_row = row - 2
-    m2_col = row + 1
-    
-    matches = []
-    
-    if 0 <= m1_row < rows and 0 <= m1_col < cols:
-        match1 = grid[m1_row][m1_col]
-        match2 = grid[m2_row][m2_col]
-        print(f"Searching for match {grid[row][col]}")
-        
-        if match1 == grid[row][col]:
-            print(f"Found matching antenna of {grid[row][col]} at {match1} at ({m1_row}, {m1_col})")
-            matches.append((False, m1_row, m1_col))
-    
-        if match2 == grid[row][col]:
-            print(f"Found matching antenna of {grid[row][col]} at {match2} at ({m2_row}, {m2_col})")
-            matches.append((True, m2_row, m2_col))
-    
-    return matches
 
-
-
-def determine_antinodes(grid, antennas):
-    antinodes, grid_height = set(), len(grid)
-    grid_width = len(grid[0]) if grid_height > 0 else 0
-    
-    for freq, aantenna_positions in antennas.items():
-        for i, pos in enumerate(aantenna_positions):
-            for match in check_if_matching_antenna(grid, pos):
-                isRight, r, c = match
-                if isRight:
-                    antinodes.add((r + 2, c + 1))
-                else:
-                    antinodes.add((r - 2, c + 1))
-            
-    return list(antinodes)
-
-
-def determine_antinodes2(grid, antennas):
+@timer
+def determine_antinodes_original(grid, antennas):
+    ''' Time complexity:  O(n*m)'''
     rows, cols = len(grid), len(grid[0])
     antinodes = set()
 
     for freq, coords in antennas.items():
-        for r in range(len(coords)):
+        for r, _ in enumerate(coords):
             for c in range(r + 1, len(coords)):
                 diff = (coords[c][0] - coords[r][0], coords[c][1] - coords[r][1])
-
+                
+                # Determine antinodes for each pair of antenna positions
                 pos1 = (coords[r][0] - diff[0], coords[r][1] - diff[1])
                 if 0 <= pos1[0] < rows and 0 <= pos1[1] < cols:
                     antinodes.add(pos1)
@@ -86,14 +51,62 @@ def determine_antinodes2(grid, antennas):
     return antinodes
 
 
+@timer
+def determine_antinodes_zip(grid, antennas):
+    ''' Time complexity:  O(n*m*c) where c is the coordinates of found antennas'''
+    rows, cols = len(grid), len(grid[0])
+    antinodes = set()
 
+    for freq, coords in antennas.items():
+        for r, _ in enumerate(coords):
+            for c in range(r + 1, len(coords)):
+                diff = tuple(x - y for x, y in zip(coords[c], coords[r]))
+
+                for i, direction in [(r, -1), (c, 1)]: # Check in both directions
+                    pos = tuple([x + y * direction for x, y in zip(coords[i], diff)])
+                    if 0 <= pos[0] < rows and 0 <= pos[1] < cols:
+                        antinodes.add(pos)
+
+    return antinodes
+
+
+@timer
+def determine_antinodes_combinations(grid, antennas):
+    ''' 
+    Time complexity:  O(n*m*c^2) where c is the coordinates of found antennas.
+    The coordinates are pairs and we pair them
+    '''
+    rows, cols = len(grid), len(grid[0])
+    antinodes = set()
+    
+    for freq, coords in antennas.items():
+        # Generate pairs for each coordinate list for each anntenna frequency 
+        # so the possitions of the antinodes can be calculated below.
+        
+        #print(coords)
+        #print(list(combinations(coords, 2)))
+        
+        for (x1, y1), (x2, y2) in combinations(coords, 2):
+            #print((x1, y1), (x2, y2))
+            diff_x, diff_y = x2 - x1, y2 - y1
+
+            pos1 = (x1 - diff_x, y1 - diff_y)
+            pos2 = (x2 + diff_x, y2 + diff_y)
+
+            for pos in (pos1, pos2):
+                if 0 <= pos[0] < rows and 0 <= pos[1] < cols:
+                    antinodes.add(pos)
+
+    return antinodes
+
+
+# TODO:  Add matching colors for antenna and corresponding anti-nodes.
 def print_grid(grid, antennas, antinodes):
     for y in range(len(grid)):
         for x in range(len(grid[0])):
-            is_antenna = False
-            is_antinode = False
-            for frequency, antenna_locations in antennas.items():
-                if (x, y) in antenna_locations:
+            is_antenna, is_antinode = False, False
+            for frequency, coords in antennas.items():
+                if (x, y) in coords:
                     print(frequency, end='')
                     is_antenna = True
                     break
@@ -109,17 +122,17 @@ def print_grid(grid, antennas, antinodes):
 
 def main(args, data):
     grid = data.strip().split('\n')
-
-    # Find all antennas
+    
     antennas = find_antennas(grid)
-
     
-    #antinodes = determine_antinodes(grid, antennas)
-    antinodes = determine_antinodes2(grid, antennas)
+    antinodes1 = determine_antinodes_original(grid, antennas)
+    antinodes2 = determine_antinodes_zip(grid, antennas)
+    antinodes3 = determine_antinodes_combinations(grid, antennas)
     
-    print_grid(grid, antennas, antinodes)
+    assert antinodes1 == antinodes2 == antinodes3
     
-    total = len(antinodes)
+    #print_grid(grid, antennas, antinodes1)
+    total = len(antinodes1)
     
     assertions(args, total, 14, 332)
 
