@@ -6,6 +6,7 @@ https://adventofcode.com/2024/day/10
 from collections import defaultdict
 from common.common import arg_parse, assertions, timer
 
+
 DIRECTIONS = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
 def find_trail_heads(grid):
@@ -32,8 +33,8 @@ def dfs(r, c, grid, visited, target, path, paths):
     visited[r][c] = True
     path.append((r, c))
     
-    for d_r, d_y in DIRECTIONS:
-        n_r, n_c = r + d_r, c + d_y
+    for d_r, dy_c in DIRECTIONS:
+        n_r, n_c = r + d_r, c + dy_c
         # Check if the new cell is within bounds, not visited, and has a value greater than the current cell by 1
         if is_in_bounds(n_r, n_c, grid) and grid[n_r][n_c] == grid[r][c] + 1:
             dfs(n_r, n_c, grid, visited, 9, path, paths)
@@ -42,32 +43,9 @@ def dfs(r, c, grid, visited, target, path, paths):
     path.pop()
 
 
-@timer
-def find_trailhead_paths_bfs(grid):
-    rows, cols = len(grid), len(grid[0])
-    trail_heads = find_trail_heads(grid)
-    all_paths = {}
- 
-    visited = [[False for _ in range(cols)] for _ in range(rows)]
-    
-    for start_x, start_y in trail_heads:
-        path = bfs(start_x, start_y, grid)
-        all_paths[(start_x, start_y)] = path
-        
-        if not visited[start_x][start_y]:
-            path = []
-            #dfs(start_x, start_y, grid, visited, 9, path, all_paths)
-            #all_paths[(start_x, start_y)] = path
-            
-    return all_paths
-
-
-
 def bfs(start_row, start_col, grid):
     queue = [(start_row, start_col)]
-    visited = set()
-    
-    path = []
+    visited, path = set(), []
     
     while queue:
         # Get the first element from the queue
@@ -92,7 +70,27 @@ def bfs(start_row, start_col, grid):
     
     return path
 
+
+@timer
+def find_trailhead_paths_bfs(grid):
+    rows, cols = len(grid), len(grid[0])
+    trail_heads = find_trail_heads(grid)
+    all_paths = {}
+ 
+    visited = [[False for _ in range(cols)] for _ in range(rows)]
+    
+    for start_x, start_y in trail_heads:
+        path = bfs(start_x, start_y, grid)
+        all_paths[(start_x, start_y)] = path
         
+        if not visited[start_x][start_y]:
+            path = []
+            #dfs(start_x, start_y, grid, visited, 9, path, all_paths)
+            #all_paths[(start_x, start_y)] = path
+            
+    return all_paths
+
+
 
 def main(args, data):
     num_grid = [[int(d) for d in line] for line in data.strip().split('\n')]
