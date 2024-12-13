@@ -1,3 +1,4 @@
 matplotlib
 numpy
 colorama
+z3-solver
