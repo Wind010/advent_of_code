@@ -28,10 +28,15 @@ def arg_parse(file: str, input_file: str, main: Callable):
     return parser.parse_args(), data
 
 
-def assertions(args, value, expected_value1, expected_value2):
+def assertions(args, value, *expected_values):
     print(value)
-    if 'input1.txt' in args.file_path: assert value == expected_value1
-    if 'input2.txt' in args.file_path: assert value == expected_value2
+    file_name = args.file_path.split('/')[-1]  # Extract the file name from the path
+    for i, expected_value in enumerate(expected_values, start=1):
+        if f'input{i}.txt' == file_name:
+            assert value == expected_value, f"Expected {expected_value} for {file_name}, but got {value}! 💀"
+            break
+    else:
+        print(f"No expected value provided for {file_name} ⁉️")
 
 
 def timer(func):
