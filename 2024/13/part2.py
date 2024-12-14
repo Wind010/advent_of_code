@@ -68,6 +68,9 @@ def find_fewest_tokens_z3(a, b, prizes):
 def find_fewest_tokens_linear_algebra_cramer(a, b, prize):
     prize = tuple(p + CONVERSION_FACTOR for p in prize)
     # Use Cramer's rule to solve the system of equations.
+    #ax + bx = px
+    #by + by = py
+    # det = ax*by - bx*by
     # det=a[0]⋅b[1]−a[1]⋅b[0]
     # x = det_x/det and y = det_y/
     a_presses = (b[0]* prize[1] - b[1]*prize[0])/ (b[0]*a[1] - b[1]*a[0])
