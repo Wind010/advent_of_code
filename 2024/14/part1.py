@@ -6,7 +6,11 @@ https://adventofcode.com/2024/day/14
 from collections import defaultdict
 import re
 from common.common import arg_parse, assertions, timer
+from collections import deque
 
+WIDTH = 101
+HEIGHT = 103
+DIRECTIONS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
 
 def parse_input(lines):
     robots = [
@@ -21,37 +25,58 @@ def parse_input(lines):
     # )
     return robots
         
-        
-        
+
+
+def determine_quadrant(x, y, width, height):
+    mid_x, mid_y = width // 2, height // 2
+    
+    # return (1 if x < mid_x else 2) + (2 if y >= mid_y else 0)
+    # return (int(x > mid_x)) + (int(y > mid_y) * 2)
+    if x < mid_x:
+        return 1 if y < mid_y else 3
+    else:
+        return 2 if y < mid_y else 4
+
+
 @timer
-def find_saftey_factor(grid, steps):
+def find_saftey_factor_clean(grid):
     rows, cols = len(grid), len(grid[0])
     robots = parse_input(grid)
-    # x, y
-    
-    r_pos = defaultdict(tuple)
-    for step in steps:
-        for i, robot in enumerate(robots):
-            x, y, vx, vy = robot
-            n_x, n_y = x + vx, y + vy
-            
-            if 0 <= n_x < rows and 0 <= n_y < cols:
-                r_pos[i] = (n_x, n_y)
-            else:
-                r_pos[i] = (n_x % rows, n_y % cols)
-                
+
+    width, height = WIDTH, HEIGHT
+    if len(robots) == 12:
+        width, height = 11, 7
+
+    positions = defaultdict(list)
+    quadrants = [0, 0, 0, 0]
+    for i, robot in enumerate(robots):
+        x, y, vx, vy = robots[i]
+        x = (x + 100 * (vx + width)) % width
+        y = (y + 100 * (vy + height)) % height
+
+        positions[robot].append((x, y))
         
-        # TODO:  Determine quadrants based off mid points of rows and cols
-    return r_pos
+        mid_x, mid_y = width // 2, height // 2
+        if x == mid_x or y == mid_y:
+            continue
+        
+        # From above breakdown.
+        j = (int(x > mid_x)) + (int(y > mid_y) * 2)
+        quadrants[j] += 1
+
+    #print(positions)
+    return quadrants[0] * quadrants[1] * quadrants[2] * quadrants[3]
 
 
+ 
 def main(args, data):
     lines = data.strip().split('\n')
  
-    safety_factor = find_saftey_factor(lines, 1)
+    safety_factor1 = find_saftey_factor_clean(lines)
     
+    assertions(args, safety_factor1, 12, 219512160)
 
-    return safety_factor
+    return safety_factor1
     
 
 
