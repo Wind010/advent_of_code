@@ -7,13 +7,15 @@ https://adventofcode.com/2024/day/15
 import re
 from common.common import arg_parse, assertions, timer
 
-
+ 
 def main(args, data):
     lines = data.strip().split('\n')
-    
-    total = 0
 
-    assertions(args, total, 1, 1)
+    
+
+    #if 'input1.txt' in file_path: assert total == 11
+    #if 'input2.txt' in file_path: assert total == 2769675
+
     return total
     
 
