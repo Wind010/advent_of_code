@@ -15,16 +15,16 @@ BOX = 'O'
 WALL = '#'
 SPACE = '.'
 
-DIRECTIONS = {'^': (-1, 0), '>':(0, 1), 'v':(1, 0), '<':(0, -1)}
-
+#DIRECTIONS = {'<': (-1, 0), 'v':(0, 1), '>':(1, 0), '^':(0, -1)}
+DIRECTIONS = { "^": (-1, 0),"v": (1, 0),"<": (0, -1),">": (0, 1) }
 
 
 def print_grid(grid):
     rows, cols = len(grid), len(grid[0])
     print()
-    for c in range(cols):
+    for r in range(rows):
         cells = ''
-        for r in range(rows):
+        for c in range(cols):
             cells += grid[r][c]
         print(cells)
     print()
@@ -65,69 +65,103 @@ def find_robot_coordinates(lines):
 @timer
 def find_box_gps_coordinates(lines):
     grid, moves, robot = parse_input(lines)
-    grid = move(grid, moves, robot)
+    grid = push_it(grid, moves, robot)
     return grid
 
 
-def move(grid, moves, robot):
+def push_it_original(grid, moves, robot):
     rows, cols = len(grid), len(grid[0])
     #print(grid, moves)
     
     queue = deque(robot)
     print_grid(grid)
     
-
-    for m in moves:   
+    for m in moves:
         x, y = robot
         dx, dy = DIRECTIONS[m]
-        nx, ny = x + dx, y + dy
-        can_move, movers = True, {}
-        cell, next_cell = grid[x][y], grid[nx][ny]
+        #nx, ny = x + dx, y + dy
+        can_move, pending = True, {}
         
-        while nx > 0 and nx < rows-1 and ny > 0 and ny < cols-1:
-            if next_cell == SPACE:
+        while True: #nx > 0 and nx < rows-1 and ny > 0 and ny < cols-1:
+            nx, ny = x + dx, y + dy
+            if grid[nx][ny] == SPACE:
                 # Normal move
-                movers[(x + dx, y + dy)] = cell
+                pending[(nx, ny)] = grid[x][y]
                 break
-            elif next_cell == BOX:
+            elif grid[nx][ny] == BOX:
                 # Move box
-                movers[(x + dx, y + dy)] = cell
-                x += dx
-                y += dy
+                pending[(nx, ny)] = grid[x][y]
+                x, y = nx, ny
             else:
                 can_move = False
                 break
-            
+        
         if can_move:
-            for mx, my in movers:
-                grid[mx][my] = movers[(mx, my)]
-            x, y = robot
-            robot = (nx, ny)
+            for mx, my in pending:
+                grid[mx][my] = pending[(mx, my)]
+                #print_grid(grid)
+ 
+            
+            #if nx > 0 and nx < rows-1 and ny > 0 and ny < cols-1:
             grid[x][y] = SPACE
-            #cell, next_cell = SPACE, ROBOT
-            print_grid(grid)
-    
+            grid[nx][ny] = ROBOT
+            #grid[nx][ny] = ROBOT
+
+            #print(m)
+            #print_grid(grid)
+     
     return grid
         
+
+
+@timer
+def push_it(grid, moves, robot):
+    r, c = robot
+    for i, m in enumerate(moves):
+        dr, dc = DIRECTIONS[m]
+        nr, nc = r+ dr, c + dc
+
+        while grid[nr][nc] not in [SPACE, WALL]:
+            nr, nc = nr + dr, nc + dc
+
+        if grid[nr][nc] == WALL:
+            # Wall, no move
+            #print(moves[i-1], m)
+            #print_grid(grid)
+            continue
+
+        # Adjust robot positions and corresponding next cells.
+        x, y = nr, nc
+        while (x, y) != (r, c):
+            x, y = x-dr, y-dc
+            grid[nr][nc] = grid[x][y]
+            nr, nc = nr-dr, nc-dc
+        
+        grid[x][y] = SPACE
+        r, c = r + dr, c + dc
+        
+        #print(moves[i-1], m)
+        #print_grid(grid)
+        
+    return grid
+
 
 
 def main(args, data):
     lines = data.strip().split('\n')
 
     grid = find_box_gps_coordinates(lines)
+    total_gps_coords = sum([100* x + y for x, r in enumerate(grid) for y, c in enumerate(grid[0]) if grid[x][y] == BOX])
     
-    total_gps_coords = sum([x+100 * y for x, r in enumerate(grid) for y, c in enumerate(grid[0]) if grid[x][y] == BOX])
+    assertions(args, total_gps_coords, 10092, 1515788, 1437174, 2028)
     
-
-
-    assertions(args, total_gps_coords, 2416, 10092, 1, 2416)
     return total_gps_coords
     
 
 
 if __name__ == "__main__":
-    #args = arg_parse(__file__, 'input4.txt', main)
+    args = arg_parse(__file__, 'input4.txt', main)
     args = arg_parse(__file__, 'input1.txt', main)
-    #args = arg_parse(__file__, 'input2.txt', main)
-    #args = arg_parse(__file__, 'input3.txt', main)
+    args = arg_parse(__file__, 'input2.txt', main)
+    args = arg_parse(__file__, 'input3.txt', main)
 
