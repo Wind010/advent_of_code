@@ -2,11 +2,8 @@
 https://adventofcode.com/
 '''
 
-
-
 import re
 from common.common import arg_parse, assertions, timer
-
 
 
 def parse_input(lines):
@@ -15,12 +12,20 @@ def parse_input(lines):
     program = [*map(int, re.findall(r'\d+', program))]
     
     return registers, program
-        
 
 
-@timer
-def run_instructions(lines):
+@timer 
+def execute_program(lines):
     registers, program = parse_input(lines)
+    return run_instructions(registers, program)
+
+@timer 
+def execute_program2(lines):
+    registers, program = parse_input(lines)
+    return run_instructions2(registers, program)
+    
+
+def run_instructions(registers, program):
     A, B, C = registers
     ptr, outputs = 0, []
 
@@ -48,7 +53,6 @@ def run_instructions(lines):
     return ','.join(map(str, outputs))
 
 
-@timer
 def run_instructions2(lines):
     registers, program = parse_input(lines)
     
@@ -99,8 +103,8 @@ def run_instructions2(lines):
 def main(args, data):
     lines = data.strip()
     
-    output1 = run_instructions(lines)
-    output2 = run_instructions2(lines)
+    output1 = execute_program(lines)
+    output2 = execute_program2(lines)
     
     assert output1 == output2
 
