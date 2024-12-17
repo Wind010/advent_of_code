@@ -15,8 +15,8 @@ BOX = 'O'
 WALL = '#'
 SPACE = '.'
 
-#DIRECTIONS = {'<': (-1, 0), 'v':(0, 1), '>':(1, 0), '^':(0, -1)}
-DIRECTIONS = { "^": (-1, 0),"v": (1, 0),"<": (0, -1),">": (0, 1) }
+#DIRECTIONS = {'<': (-1, 0), 'v':(0, 1), '>':(1, 0), '^':(0, -1)} # x, y
+DIRECTIONS = { "^": (-1, 0),"v": (1, 0),"<": (0, -1),">": (0, 1) } # r, c
 
 
 def print_grid(grid):
@@ -63,7 +63,7 @@ def find_robot_coordinates(lines):
     
 
 @timer
-def find_box_gps_coordinates(lines):
+def find_boxes_gps_coordinates(lines):
     grid, moves, robot = parse_input(lines)
     grid = push_it(grid, moves, robot)
     return grid
@@ -119,7 +119,7 @@ def push_it(grid, moves, robot):
     r, c = robot
     for i, m in enumerate(moves):
         dr, dc = DIRECTIONS[m]
-        nr, nc = r+ dr, c + dc
+        nr, nc = r + dr, c + dc
 
         while grid[nr][nc] not in [SPACE, WALL]:
             nr, nc = nr + dr, nc + dc
@@ -150,7 +150,7 @@ def push_it(grid, moves, robot):
 def main(args, data):
     lines = data.strip().split('\n')
 
-    grid = find_box_gps_coordinates(lines)
+    grid = find_boxes_gps_coordinates(lines)
     total_gps_coords = sum([100* x + y for x, r in enumerate(grid) for y, c in enumerate(grid[0]) if grid[x][y] == BOX])
     
     assertions(args, total_gps_coords, 10092, 1515788, 1437174, 2028)
