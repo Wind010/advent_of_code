@@ -24,7 +24,10 @@ def find_reoccurance(lines):
 
         if result == program:
             return A
-
+        
+        # oct(117440)
+        # 117440 converts to 0o345300 in base-8.  So we increment accordingly by base-8 steps.
+        # We optimize by decrementing in base-8 from the last last result output.
         # Adjust A based on the first mismatch, starting from the least significant bit/tail
         for i in range(len(result) - 1, -1, -1):
             if result[i] != program[i]:
@@ -55,7 +58,7 @@ def main(args, data):
     lines = data.strip()
     
     min_a_value1 = find_reoccurance(lines)
-    min_a_value2 = find_reoccurance(lines)
+    min_a_value2 = find_reoccurance2(lines)
     
     assert min_a_value1 == min_a_value2
 
