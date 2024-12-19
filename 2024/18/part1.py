@@ -65,7 +65,7 @@ def find_min_steps_for_exit_bfs1(byte_positions, mem, size):
             nx, ny = x + dx, y + dy
             
             # Check if the new position is in bounds and not visited.  Bug was size and not size+1
-            if 0 <= nx < size+1 and 0 <= ny < size+1 and (nx, ny) not in byte_positions and (nx, ny) not in seen:
+            if 0 <= nx <= size and 0 <= ny <= size and (nx, ny) not in byte_positions and (nx, ny) not in seen:
                 seen.add((nx, ny))
                 parent[(nx, ny)] = (x, y)
                 queue.append((nx, ny, steps + 1))
@@ -101,7 +101,25 @@ def find_min_steps_for_exit_bfs2(byte_positions, mem, size):
                 return seen[(nx, ny)]
             
     return 0
-    
+
+
+@timer
+def find_min_steps_for_exit_bisect(byte_positions, mem, size):
+    def path(mem):
+        seen = {*byte_positions[:mem]}
+        queue = [(0, (0,0))]
+
+        for dist, (x,y) in queue:
+            if (x,y) == (size, size):
+                return dist
+
+            for x,y in (x,y+1), (x,y-1), (x+1,y), (x-1,y):
+                if (x,y) not in seen and 0 <= x <= size and 0 <= y <= size:
+                    queue.append((dist+1, (x,y)))  # Modify queue while iterating is intended.
+                    seen.add((x,y))
+        return 1e7
+
+    return path(mem)
 
 
 @timer
@@ -127,8 +145,9 @@ def main(args, data):
     min_steps1 = find_min_steps_for_exit_bfs1(byte_positions, mem, size)[0]
     min_steps2 = find_min_steps_for_exit_bfs2(byte_positions, mem, size)
     min_steps3 = find_min_steps_for_exit_networkx(byte_positions, mem, size)
-
-    assert min_steps1 == min_steps2 == min_steps3
+    min_steps4 = find_min_steps_for_exit_bisect(byte_positions, mem, size)
+    
+    assert min_steps1 == min_steps2 == min_steps3 == min_steps4
 
     assertions(args, min_steps1, 22, 324, 304)
     return min_steps1
