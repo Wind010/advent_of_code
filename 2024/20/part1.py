@@ -5,7 +5,7 @@ https://adventofcode.com/2024/day/20
 
 from functools import cache
 import re
-from common.common import arg_parse, assertions, timer, DIRECTIONS
+from common.common import arg_parse, assertions, timer, DIRECTIONS_4
 from collections import deque
 import heapq
 from itertools import combinations
@@ -35,7 +35,7 @@ def bfs(grid, cell):
     q, seen = deque([cell]), {cell: 0}
     while q:
         x, y = q.popleft()
-        for n in [(x + dx, y + dy) for dx, dy in DIRECTIONS]:
+        for n in [(x + dx, y + dy) for dx, dy in DIRECTIONS_4]:
             if grid[(n)] == OBSTACLE:
                 continue
             if n in seen:
@@ -105,7 +105,7 @@ def find_cheats_under_n_picoseconds_dijkstra(lines, pico_seconds, allowed_clips,
     
     def find_neighbors(x, y, size):
         #cells = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-        cells = [(x+dx, y+dy) for dx, dy in DIRECTIONS]
+        cells = [(x+dx, y+dy) for dx, dy in DIRECTIONS_4]
         return [(x, y) for (x, y) in cells if x >= 0 and x < size and y >= 0 and y < size]
     
     def neighbors(n):
