@@ -30,7 +30,6 @@ def process_gates(data):
         'AND': operator.__and__,
         'OR': operator.__or__,
         'XOR': operator.__xor__
-        
     }
     
     d_gates = {}
