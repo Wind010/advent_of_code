@@ -7,6 +7,14 @@ from functools import wraps
 from typing import Callable
 from colorama import Fore, Back, Style
 
+UP = '^'
+DOWN = 'v'
+LEFT = '>'
+RIGHT = '<'
+
+DIRECTIONS_4 = [(-1, 0), (1, 0), (0, 1), (0, -1)] # or re-ordered DIRECTIONS_8[::2] 
+DIRECTIONS_8 = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
+
 # If class, then __init__.py would resolve.
 
 def arg_parse(file: str, input_file: str, main: Callable):
@@ -34,7 +42,7 @@ def assertions(args, value, *expected_values):
     file_name = args.file_path.split('/')[-1]  # Extract the file name from the path
     for i, expected_value in enumerate(expected_values, start=1):
         if f'input{i}.txt' in file_name:
-            assert value == expected_value, f"💀 Expected {expected_value} for {file_name}, but got {Back.RED}{value}{Back.RESET}!"
+            assert value == expected_value, f"💀 Expected {expected_value} for {file_name}, but got {Back.RED}{value}{Back.RESET} !"
             print(f"✅ '{file_name}' yields {Back.GREEN}{value}{Back.RESET}")
             break
     else:
