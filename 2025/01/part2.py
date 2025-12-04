@@ -14,13 +14,12 @@ def turn_safe_initial(data):
     for d in data:
         dir = -1 if d[0] == 'L' else 1
         steps = int(d[1:])
-
+        
         #print(pos, steps, dir, count)
-
-        if pos == 0:
-            count += 1
-
         for i in range(steps):
+            if pos == 0:
+                count += 1
+            
             if pos == LIMIT and dir == 1:
                 pos = 0
             elif pos == 0 and dir == -1:
@@ -35,7 +34,7 @@ def turn_safe_initial(data):
 def main(args, data):
     lines = data.strip().split('\n')
     zeros_count = turn_safe_initial(lines)
-    assertions(args, zeros_count, 3, 1191, 1081)
+    assertions(args, zeros_count, 6, 6858, 6689)
 
 
 if __name__ == "__main__":
