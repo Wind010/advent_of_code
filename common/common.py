@@ -59,7 +59,7 @@ def rotate_matrix_90(matrix, direction='clockwise'):
         # Reverse rows, then transpose
         return [list(row) for row in zip(*matrix[::-1])]
 
-OPERATOR_MAP = {
+OP_MAP = {
     '+': operator.add,
     '-': operator.sub,
     '*': operator.mul,
