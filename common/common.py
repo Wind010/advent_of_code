@@ -7,6 +7,8 @@ from functools import wraps
 from typing import Callable
 from colorama import Fore, Back, Style
 
+import operator
+
 UP = '^'
 DOWN = 'v'
 LEFT = '>'
@@ -36,6 +38,33 @@ def arg_parse(file: str, input_file: str, main: Callable):
     
     return parser.parse_args(), data
 
+def transpose_matrix(matrix):
+    return [list(row) for row in zip(*matrix)]
+
+def rotate_180(matrix):
+    return [row[::-1] for row in matrix[::-1]]
+
+
+def rotate_matrix_90(matrix, direction='clockwise'):
+    """
+    Rotates a matrix 90 degrees in the specified direction.
+    :param matrix: List of lists (2D matrix)
+    :param direction: 'clockwise' or 'counterclockwise'
+    :return: Rotated matrix
+    """
+    if direction == 'clockwise':
+        # Transpose and then reverse each row
+        return [list(reversed(col)) for col in zip(*matrix)]
+    elif direction == 'counterclockwise':
+        # Reverse rows, then transpose
+        return [list(row) for row in zip(*matrix[::-1])]
+
+OPERATOR_MAP = {
+    '+': operator.add,
+    '-': operator.sub,
+    '*': operator.mul,
+    '/': operator.floordiv
+}
 
 def assertions(args, value, *expected_values):
     print(value)
