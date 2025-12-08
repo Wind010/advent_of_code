@@ -62,9 +62,24 @@ def find_splits(input_str):
     return (splits, sum(current.values()))
 
 
+def find_splits_alt(data):
+    lines = data.strip().splitlines()
+    splitters = [col for l in lines for col, x in enumerate(l) if x == "^"]
+    entering = [1] + [0] * (len(splitters) - 1)
+
+    for i, si in enumerate(splitters):
+        for j, sj in enumerate(splitters[:i][::-1]):
+            if si == sj:
+                break
+            if abs(si - sj) == 1:
+                entering[i] += entering[i - j - 1]
+
+    return (sum(b > 0 for b in entering), sum(entering) + 1)
+
+
 
 def main(args, data):
-    splits, total = find_splits(data)
+    splits, total = find_splits_alt(data)
     
     assertions(args, splits, 21, 1687, 1537)
     return total
