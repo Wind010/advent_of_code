@@ -13,7 +13,7 @@ https://adventofcode.com/2025/day8
 # I am too lazy to implement Union-Find from scratch, so I'll use NetworkX.
 # TODO: Implement Union-Find manually
 
-from part1 import parse_input
+from part1 import parse_input, UnionFind
 from common.common import arg_parse, assertions, timer
 
 import math
@@ -21,7 +21,7 @@ import itertools
 import networkx as ntwx
 
 @timer
-def find_last_connection_product(coords):
+def find_last_connection_product_networkx(coords):
     n, edges = len(coords), []
     
     for (i, a), (j, b) in itertools.combinations(enumerate(coords), 2):
@@ -43,14 +43,41 @@ def find_last_connection_product(coords):
     x2 = coords[last_edge[1]][0]
     return x1 * x2
 
+@timer
+def find_last_connection_product_with_union_find(coords):
+    n = len(coords)
+    edges = []
+    for (i, a), (j, b) in itertools.combinations(enumerate(coords), 2):
+        dist = math.dist(a, b)
+        edges.append((dist, i, j))
+    edges.sort()
+
+    uf = UnionFind(n)
+    components = n
+    last_pair = None
+    for dist, i, j in edges:
+        if uf.union(i, j):
+            components -= 1
+            last_pair = (i, j)
+            if components == 1:
+                break
+            
+    x1 = coords[last_pair[0]][0]
+    x2 = coords[last_pair[1]][0]
+    return x1 * x2
+
+
 
 def main(args, data):
     coords = parse_input(data)
     
-    product = find_last_connection_product(coords)
-    
-    assertions(args, product, 25272, 25325968, 3276581616)
-    return product
+    product1 = find_last_connection_product_networkx(coords)
+    assertions(args, product1, 25272, 25325968, 3276581616)
+
+    product2 = find_last_connection_product_with_union_find(coords)
+    assertions(args, product2, 25272, 25325968, 3276581616)
+
+    return product2
     
 
 
