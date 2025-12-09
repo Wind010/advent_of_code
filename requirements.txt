@@ -4,3 +4,4 @@ colorama
 z3-solver
 networkx
 graphviz
+shapely
