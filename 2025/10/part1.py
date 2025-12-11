@@ -38,21 +38,20 @@ def parse_input(data):
             else:
                 i += 1
         
-        p = [tuple(map(int, x.split(','))) for x in p]
-        c = [tuple(map(int, x.split(','))) for x in c]
+        # Just convert to indexes of where lights are on for easy comparison.
+        b = set(i for i, t in enumerate(b) if t == '#')
+        p = [set(map(int, x.split(','))) for x in p]
+        c = [set(map(int, x.split(','))) for x in c]
         
         brackets.append(b)
         paren.append(p)
         curly.append(c)
+        
     return brackets, paren, curly
 
 
 
-def find_min_presses1(target_lights, presses):
-    # Just convert to indexes of where lights are on for easy comparison.
-    target_lights = set(i for i, t in enumerate(target_lights) if t == '#')
-    presses = [set(p) for p in presses]
-    
+def find_min_presses_bfs(target_lights, presses):
     q = deque()
     q.append((set(), 0))
     seen = set()
@@ -76,7 +75,7 @@ def main(args, data):
     lights, presses, joltage = parse_input(data)
     #print(lights, presses, joltage)
     
-    total = sum(find_min_presses1(lights[i], presses[i]) for i in range(len(lights)))
+    total = sum(find_min_presses_bfs(lights[i], presses[i]) for i in range(len(lights)))
 
     assertions(args, total, 7, 457, 449)
     return total
