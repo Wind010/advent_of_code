@@ -39,9 +39,9 @@ def parse_input(data):
                 i += 1
         
         # Just convert to indexes of where lights are on for easy comparison.
-        b = set(i for i, t in enumerate(b) if t == '#')
-        p = [set(map(int, x.split(','))) for x in p]
-        c = [set(map(int, x.split(','))) for x in c]
+        b = tuple(i for i, t in enumerate(b) if t == '#')
+        p = [tuple(map(int, x.split(','))) for x in p]
+        c = [tuple(map(int, x.split(','))) for x in c]
         
         brackets.append(b)
         paren.append(p)
@@ -49,9 +49,20 @@ def parse_input(data):
         
     return brackets, paren, curly
 
-
-
+def parse_input2(data):
+    res = []
+    lines = data.strip().splitlines()
+    for line in lines:
+        brackets, *paren, curly = line.split()
+        brackets = [x == "#" for x in brackets[1:-1]]
+        parens = [tuple(map(int, p[1:-1].split(","))) for p in paren]
+        curly = list(map(int, curly[1:-1].split(",")))
+        res.append((brackets, parens, curly))
+    return res
+    
+    
 def find_min_presses_bfs(target_lights, presses):
+    target_lights, presses = set(target_lights), list(map(set, presses))
     q = deque()
     q.append((set(), 0))
     seen = set()
@@ -71,7 +82,6 @@ def find_min_presses_bfs(target_lights, presses):
 
 
 def main(args, data):
-
     lights, presses, joltage = parse_input(data)
     #print(lights, presses, joltage)
     

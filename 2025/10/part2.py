@@ -3,17 +3,31 @@ https://adventofcode.com/2025/day10
 '''
 
 
-
-import re
+from part1 import parse_input
 from common.common import arg_parse, assertions, timer
+from scipy.optimize import linprog
+
+# Too lazy, use PuLP or similar library to solve integer linear algebra programming problem.
+
+def find_min_presses_linear_alg(presses, joltages):
+    presses, joltages = list(map(tuple, presses)), tuple(*joltages)
+    costs = [1] * len(presses) # OR [1 for p in presses] 1 per button.
+    #eqs[i][p] is True if press contribues to joltage[i]
+    eqs = [[i in p for p in presses] for i in range(len(joltages))]
+    # min(cost * x) subject to eqs * x = joltages
+    
+    res = linprog(costs, A_eq=eqs, b_eq=joltages, integrality=1).fun
+    return int(res) if res else 0
+
 
 
 def main(args, data):
-    lines = data.strip().split('\n')
-    
-    total = 0
+    lights, presses, joltages = parse_input(data)
+    #print(lights, presses, joltage)
 
-    assertions(args, total, 1, 1)
+    total = sum(find_min_presses_linear_alg(presses[i], joltages[i]) for i in range(len(lights)))
+
+    assertions(args, total, 33, 17575, 17848)
     return total
     
 
