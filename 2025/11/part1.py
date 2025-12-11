@@ -10,23 +10,19 @@ https://adventofcode.com/2025/day11
 from common.common import arg_parse, assertions, timer
 import networkx as ntwx
 
-def find_all_valid_paths(lines, source, target):
+def populate_graph(lines):
     G = ntwx.DiGraph()
     
     for line in lines:
         src, *dest = line.split()
         for node in dest:
             G.add_edge(src.strip(':'), node)
-            
-    # [G.add_edge(src.strip(':'), node) 
-    #     for line in lines 
-    #     for src, *dest in [line.split()] 
-    #     for node in dest]
-    
+    return G
+
+def find_all_valid_paths(lines, source, target):
+    G = populate_graph(lines)
     return [*ntwx.all_simple_paths(G, source, target)]
     
-    
-
 
 def main(args, data):
     lines = data.strip().split('\n')
