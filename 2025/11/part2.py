@@ -50,6 +50,15 @@ def find_all_relevant_paths_memo(G, node, dac_seen=None, fft_seen=None, memo=Non
     return result
 
 
+@cache
+def find_all_relevant_paths_cache(G, node, dac_seen=None, fft_seen=None):
+    if node == "out":
+        return dac_seen and fft_seen
+    dac_seen = dac_seen or node == "dac"
+    fft_seen = fft_seen or node == "fft"
+    return sum(find_all_relevant_paths_cache(G, neighbor, dac_seen, fft_seen)
+               for neighbor in G.neighbors(node))
+
 
 def main(args, data):
     lines = data.strip().split('\n')
